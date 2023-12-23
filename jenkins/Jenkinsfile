@@ -28,7 +28,6 @@
 //         }
 //     }
 // }
-
 node {
     // Docker agent with Maven image
     docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
@@ -41,6 +40,9 @@ node {
 
         // Stage: Test
         stage('Test') {
+            // Install Maven (if not installed)
+            sh 'mvn --version || (apt-get update && apt-get install -y maven)'
+
             // Execute Maven test
             sh 'mvn test'
             
