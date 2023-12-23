@@ -28,34 +28,3 @@ pipeline {
         }
     }
 }
-
-// node {
-//     // Docker agent with Maven image
-//     docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
-        
-//         // Stage: Build
-//         stage('Build') {
-//             // Execute Maven build
-//             sh 'mvn -B -DskipTests clean package'
-//         }
-
-//         // Stage: Test
-//         stage('Test') {
-//             // Execute Maven test
-//             sh 'mvn test'
-            
-//             // Post-build action: JUnit
-//             post {
-//                 always {
-//                     junit 'target/surefire-reports/*.xml'
-//                 }
-//             }
-//         }
-
-//         // Stage: Deliver
-//         stage('Deliver') {
-//             // Execute deliver.sh script
-//             sh './jenkins/scripts/deliver.sh'
-//         }
-//     }
-// }
