@@ -1,63 +1,61 @@
-// pipeline {
-//     agent {
-//         docker {
-//             image 'maven:3.9.0'
-//             args '-v /root/.m2:/root/.m2'
-//         }
-//     }
-//     stages {
-//         stage('Build') {
-//             steps {
-//                 sh 'mvn -B -DskipTests clean package'
-//             }
-//         }
-//         stage('Test') {
-//             steps {
-//                 sh 'mvn test'
-//             }
-//             post {
-//                 always {
-//                     junit 'target/surefire-reports/*.xml'
-//                 }
-//             }
-//         }
-//         stage('Deliver') {
-//             steps {
-//                 sh './jenkins/scripts/deliver.sh'
-//             }
-//         }
-//     }
-// }
-node {
-    // Docker agent with Maven image
-    docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
-        
-        // Stage: Build
-        stage('Build') {
-            // Execute Maven build
-            sh 'mvn -B -DskipTests clean package'
+pipeline {
+    agent {
+        docker {
+            image 'maven:3.9.0'
+            args '-v /root/.m2:/root/.m2'
         }
-
-        // Stage: Test
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
         stage('Test') {
-            // Install Maven (if not installed)
-            sh 'mvn --version || (apt-get update && apt-get install -y maven)'
-
-            // Execute Maven test
-            sh 'mvn test'
-            
-            // Post-build action: JUnit
+            steps {
+                sh 'mvn test'
+            }
             post {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
             }
         }
-
-        // Stage: Deliver
         stage('Deliver') {
-            // Execute deliver.sh script
-            sh './jenkins/scripts/deliver.sh'
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+            }
         }
     }
 }
+
+// node {
+//     // Docker agent with Maven image
+//     docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
+        
+//         // Stage: Build
+//         stage('Build') {
+//             // Execute Maven build
+//             sh 'mvn -B -DskipTests clean package'
+//         }
+
+//         // Stage: Test
+//         stage('Test') {
+//             // Execute Maven test
+//             sh 'mvn test'
+            
+//             // Post-build action: JUnit
+//             post {
+//                 always {
+//                     junit 'target/surefire-reports/*.xml'
+//                 }
+//             }
+//         }
+
+//         // Stage: Deliver
+//         stage('Deliver') {
+//             // Execute deliver.sh script
+//             sh './jenkins/scripts/deliver.sh'
+//         }
+//     }
+// }
